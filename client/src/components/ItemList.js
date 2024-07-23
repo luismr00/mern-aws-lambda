@@ -20,7 +20,7 @@ const ItemList = () => {
         try {
             const session = await fetchAuthSession();
             const idToken = session.tokens.idToken.toString(); // Get the full ID token string
-            const response = await axios.get('http://localhost:4000/items', {
+            const response = await axios.get('https://k83c8apq78.execute-api.us-east-1.amazonaws.com/items', {
                 headers: {
                     Authorization: `Bearer ${idToken}`,
                 },
@@ -35,7 +35,7 @@ const ItemList = () => {
         try {
             const session = await fetchAuthSession();
             const idToken = session.tokens.idToken.toString(); // Get the full ID token string
-            const response = await axios.post('http://localhost:4000/items', 
+            const response = await axios.post('https://k83c8apq78.execute-api.us-east-1.amazonaws.com/items', 
                 { name: newItemName }, 
                 { headers: { Authorization: `Bearer ${idToken}` } }
             );
@@ -50,7 +50,7 @@ const ItemList = () => {
         try {
             const session = await fetchAuthSession();
             const idToken = session.tokens.idToken.toString(); // Get the full ID token string
-            const response = await axios.put(`http://localhost:4000/items/${itemId}`, 
+            const response = await axios.put(`https://k83c8apq78.execute-api.us-east-1.amazonaws.com/items/${itemId}`, 
                 { name: updateItemName },
                 { headers: { Authorization: `Bearer ${idToken}` } }
             );
@@ -66,7 +66,7 @@ const ItemList = () => {
         try {
             const session = await fetchAuthSession();
             const idToken = session.tokens.idToken.toString(); // Get the full ID token string
-            await axios.delete(`http://localhost:4000/items/${id}`, {
+            await axios.delete(`https://k83c8apq78.execute-api.us-east-1.amazonaws.com/items/${id}`, {
                 headers: { Authorization: `Bearer ${idToken}` },
             });
             setItems(items.filter(item => item._id !== id));
@@ -74,22 +74,6 @@ const ItemList = () => {
             console.error('Error deleting item:', error);
         }
     };
-
-    // const deleteItem = async (id) => {
-    //     try {
-    //         const session = await fetchAuthSession();
-    //         const idToken = session.tokens.idToken.toString(); // Get the full ID token string
-    //         console.log(`Attempting to delete item with ID: ${id}`); // Log the ID being deleted
-    //         const response = await axios.delete(`http://localhost:4000/items/${id}`, {
-    //             headers: { Authorization: `Bearer ${idToken}` },
-    //         });
-    //         console.log('Delete response:', response); // Log the response
-    //         setItems(items.filter(item => item._id !== id));
-    //     } catch (error) {
-    //         console.error('Error deleting item:', error);
-    //     }
-    // };
-    
 
     return (
         <div>

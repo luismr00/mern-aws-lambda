@@ -1,49 +1,20 @@
-// const express = require('express');
-// const mongoose = require('mongoose');
-// const bodyParser = require('body-parser');
-// const cors = require('cors');
-// const itemRoutes = require('./routes/itemRoutes');
-
-// const app = express();
-// const port = process.env.PORT || 4000;
-
-// app.use(bodyParser.json());
-// app.use(cors());
-
-// const encodedPassword = encodeURIComponent('crudmernawslambda1@');
-// const mongoURI = `mongodb+srv://CRUD-MERN-AWSLAMBDA:${encodedPassword}@crud-mern-awslambda.wgemtnv.mongodb.net/?retryWrites=true&w=majority&appName=CRUD-MERN-AWSLAMBDA`; // Replace with your actual MongoDB URI
-
-// mongoose.connect(mongoURI);
-
-// mongoose.connection.once('open', () => {
-//     console.log('Connected to MongoDB');
-// });
-
-// app.use('/items', itemRoutes);
-
-// app.listen(port, () => {
-//     console.log(`Server is running on port: ${port}`);
-// });
-
-
 const express = require('express');
+const serverless = require('serverless-http');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const Item = require('./models/item');
 const authenticateToken = require('./middlewares/auth');
+require('dotenv').config();
 
 const app = express();
-const port = 4000;
+// const port = 4000;
 
 app.use(cors());
 app.use(bodyParser.json());
 
-const encodedPassword = encodeURIComponent('crudmernawslambda1@');
-const mongoURI = `mongodb+srv://CRUD-MERN-AWSLAMBDA:${encodedPassword}@crud-mern-awslambda.wgemtnv.mongodb.net/?retryWrites=true&w=majority&appName=CRUD-MERN-AWSLAMBDA`; // Replace with your actual MongoDB URI
-
 // Connect to MongoDB
-mongoose.connect(mongoURI, {
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => console.log('MongoDB connected'))
@@ -95,20 +66,6 @@ app.put('/items/:id', async (req, res) => {
   }
 });
 
-// app.delete('/items/:id', async (req, res) => {
-//   try {
-//     const item = await Item.findById(req.params.id);
-//     if (!item) {
-//       return res.status(404).json({ message: 'Item not found' });
-//     }
-
-//     await item.remove();
-//     res.json({ message: 'Item deleted' });
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// });
-
 app.delete('/items/:id', async (req, res) => {
     try {
       console.log(`Attempting to delete item with ID: ${req.params.id}`); // Log the ID being deleted
@@ -126,8 +83,8 @@ app.delete('/items/:id', async (req, res) => {
   });
   
   
+// app.listen(port, () => {
+//   console.log(`Server running on port ${port}`);
+// });
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
-
+module.exports.handler = serverless(app);
