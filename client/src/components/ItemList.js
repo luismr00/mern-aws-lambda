@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Amplify } from 'aws-amplify';
 import awsConfig from '../aws-exports';
-import { fetchAuthSession } from 'aws-amplify/auth';
+import SignOut from './SignOut';
 
 Amplify.configure(awsConfig);
 
@@ -18,8 +18,7 @@ const ItemList = () => {
 
     const fetchItems = async () => {
         try {
-            const session = await fetchAuthSession();
-            const idToken = session.tokens.idToken.toString(); // Get the full ID token string
+            const idToken = sessionStorage.getItem('idToken');
             const response = await axios.get('http://localhost:4000/items', {
                 headers: {
                     Authorization: `Bearer ${idToken}`,
@@ -33,8 +32,7 @@ const ItemList = () => {
 
     const addItem = async () => {
         try {
-            const session = await fetchAuthSession();
-            const idToken = session.tokens.idToken.toString(); // Get the full ID token string
+            const idToken = sessionStorage.getItem('idToken');
             const response = await axios.post('http://localhost:4000/items', 
                 { name: newItemName }, 
                 { headers: { Authorization: `Bearer ${idToken}` } }
@@ -48,8 +46,7 @@ const ItemList = () => {
 
     const updateItem = async (itemId) => {
         try {
-            const session = await fetchAuthSession();
-            const idToken = session.tokens.idToken.toString(); // Get the full ID token string
+            const idToken = sessionStorage.getItem('idToken');
             const response = await axios.put(`http://localhost:4000/items/${itemId}`, 
                 { name: updateItemName },
                 { headers: { Authorization: `Bearer ${idToken}` } }
@@ -64,8 +61,7 @@ const ItemList = () => {
 
     const deleteItem = async (id) => {
         try {
-            const session = await fetchAuthSession();
-            const idToken = session.tokens.idToken.toString(); // Get the full ID token string
+            const idToken = sessionStorage.getItem('idToken');
             await axios.delete(`http://localhost:4000/items/${id}`, {
                 headers: { Authorization: `Bearer ${idToken}` },
             });
@@ -74,26 +70,12 @@ const ItemList = () => {
             console.error('Error deleting item:', error);
         }
     };
-
-    // const deleteItem = async (id) => {
-    //     try {
-    //         const session = await fetchAuthSession();
-    //         const idToken = session.tokens.idToken.toString(); // Get the full ID token string
-    //         console.log(`Attempting to delete item with ID: ${id}`); // Log the ID being deleted
-    //         const response = await axios.delete(`http://localhost:4000/items/${id}`, {
-    //             headers: { Authorization: `Bearer ${idToken}` },
-    //         });
-    //         console.log('Delete response:', response); // Log the response
-    //         setItems(items.filter(item => item._id !== id));
-    //     } catch (error) {
-    //         console.error('Error deleting item:', error);
-    //     }
-    // };
     
 
     return (
         <div>
             <h2>Item List</h2>
+            <SignOut />
             <ul>
                 {items.map(item => (
                     <li key={item._id}>

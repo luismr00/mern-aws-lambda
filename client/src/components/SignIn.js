@@ -1,27 +1,38 @@
 import React, { useState } from 'react';
-import { Auth } from 'aws-amplify';
+import { signIn } from '../authService';
 
 const SignIn = () => {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const signIn = async () => {
+    const handleSignIn = async (e) => {
+        e.preventDefault();
         try {
-            await Auth.signIn(username, password);
-            alert('Sign in successful!');
+          const session = await signIn(email, password);
+          console.log('Sign in successful', session);
+          if (session && typeof session.AccessToken !== 'undefined') {
+            sessionStorage.setItem('accessToken', session.AccessToken);
+            if (sessionStorage.getItem('accessToken')) {
+              window.location.href = '/';
+            } else {
+              console.error('Session token was not set properly.');
+            }
+          } else {
+            console.error('SignIn session or AccessToken is undefined.');
+          }
         } catch (error) {
-            alert('Error signing in: ' + error.message);
+          alert(`Sign in failed: ${error}`);
         }
-    };
+      };
 
     return (
         <div>
             <h2>Sign In</h2>
             <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
             />
             <input
                 type="password"
@@ -29,7 +40,8 @@ const SignIn = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
             />
-            <button onClick={signIn}>Sign In</button>
+            <button onClick={handleSignIn}>Sign In</button>
+            <p>Don't have an account?<a href="/signup">Sign Up</a></p>
         </div>
     );
 };

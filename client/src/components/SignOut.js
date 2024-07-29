@@ -1,17 +1,21 @@
 import React from 'react';
-import { Auth } from 'aws-amplify';
+import { signOut } from '../authService';
+// import { Auth } from 'aws-amplify';
 
 const SignOut = () => {
-    const signOut = async () => {
+
+    const handleSignOut = async () => {
         try {
-            await Auth.signOut();
+            await signOut();
             alert('Sign out successful!');
+            window.location.href = '/signin';
         } catch (error) {
-            alert('Error signing out: ' + error.message);
+            alert(`Sign out failed: ${error}`);
         }
     };
 
-    return <button onClick={signOut}>Sign Out</button>;
+
+    return <button onClick={handleSignOut}>Sign Out</button>;
 };
 
 export default SignOut;
