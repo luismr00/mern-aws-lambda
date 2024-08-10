@@ -31,7 +31,7 @@ const App = () => {
                 <Route path="/confirm" element={<ConfirmSignUp />} />
                 <Route path="/upload" element={isAuthenticated() ? <UploadImage /> : <Navigate to="/signin" />} />
                 <Route path="/display-image" element={isAuthenticated() ? <DisplayImage /> : <Navigate to="/signin" />} />
-                <Route path="/display-video" element={isAuthenticated() ? <DisplayVideo /> : <Navigate to="/signin" />} />
+                <Route path="/display-video/:id" element={isAuthenticated() ? <DisplayVideo /> : <Navigate to="/signin" />} />
             </Routes>
         </BrowserRouter>
     );
